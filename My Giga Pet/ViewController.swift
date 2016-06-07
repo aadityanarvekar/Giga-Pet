@@ -9,7 +9,6 @@
 import UIKit
 import AVFoundation
 
-
 class ViewController: UIViewController {
     
     let DIM_ALPHA: CGFloat = 0.4
@@ -25,12 +24,17 @@ class ViewController: UIViewController {
     @IBOutlet weak var penalty3Img: UIImageView!
     var penaltyImages = [UIImageView]()
     
-    var audio: AVAudioPlayer!
     var numOfAvailableLives: Int!
     var timer: NSTimer!
     
     var monsterFed: Bool = false
     var monsterLoved: Bool = false
+    
+    var musicPlayer: AVAudioPlayer!
+    var sfxBite: AVAudioPlayer!
+    var sfxHeart: AVAudioPlayer!
+    var sfxDeath: AVAudioPlayer!
+    var sfxSkull: AVAudioPlayer!
     
     
     override func viewDidLoad() {
@@ -41,15 +45,27 @@ class ViewController: UIViewController {
     func itemDroppedonCharacter(notification: NSNotification) {
         if let obj = notification.object {
             if obj as! String  == "1" { // Heart fed to the giant
-                let heartAudioURL = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("heart", ofType: "wav")!)
-                playAudioFile(heartAudioURL, numOfLoops: 0)
+                sfxHeart.volume = 0.1
+                sfxHeart.play()
                 monsterLoved = true
+                disableMonsterHeartAndFood()
+                startTimer(3.0)
             } else if obj as! NSObject == "2" { // Food fed to the giant
-                let foodAudioURL = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("bite", ofType: "wav")!)
-                playAudioFile(foodAudioURL, numOfLoops: 0)
+                sfxBite.volume = 0.1
+                sfxBite.play()
                 monsterFed = true
+                disableMonsterHeartAndFood()
+                startTimer(3.0)
             }
         }
+    }
+    
+    func disableMonsterHeartAndFood() {
+        monsterFoodImg.alpha = DIM_ALPHA
+        monsterHeartImg.alpha = DIM_ALPHA
+        
+        monsterFoodImg.userInteractionEnabled = false
+        monsterHeartImg.userInteractionEnabled = false
     }
     
     override func didReceiveMemoryWarning() {
@@ -57,22 +73,28 @@ class ViewController: UIViewController {
         // Dispose of any resources that can be recreated.
     }
     
-    func playAudioFile(fileURL: NSURL, numOfLoops: Int) {
-        
+    func initializeGame() {
         do {
-            try audio = AVAudioPlayer(contentsOfURL: fileURL)
+            try musicPlayer = AVAudioPlayer(contentsOfURL: NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("cave-music", ofType: "mp3")!))
+            try sfxBite = AVAudioPlayer(contentsOfURL: NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("bite", ofType: "wav")!))
+            try sfxHeart = AVAudioPlayer(contentsOfURL: NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("heart", ofType: "wav")!))
+            try sfxSkull = AVAudioPlayer(contentsOfURL: NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("skull", ofType: "wav")!))
+            try sfxDeath = AVAudioPlayer(contentsOfURL: NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("death", ofType: "wav")!))
+            
+            musicPlayer.prepareToPlay()
+            musicPlayer.numberOfLoops = -1
+            musicPlayer.volume = 0.05
+            musicPlayer.play()
+            
+            sfxBite.prepareToPlay()
+            sfxHeart.prepareToPlay()
+            sfxSkull.prepareToPlay()
+            sfxDeath.prepareToPlay()
+            
         } catch let error as NSError {
-            print(error.description)
+            print("\(error.description)")
         }
         
-        audio.prepareToPlay()
-        audio.numberOfLoops = numOfLoops
-        audio.volume = 0.1
-        audio.play()
-    }
-    
-    func initializeGame() {
-        audio = AVAudioPlayer()
         numOfAvailableLives = MAXIMUM_PENALTIES
         
         penaltyImages.append(penalty1Img)
@@ -83,6 +105,9 @@ class ViewController: UIViewController {
         penalty2Img.alpha = DIM_ALPHA
         penalty3Img.alpha = DIM_ALPHA
         
+        monsterHeartImg.alpha = OPAQUE
+        monsterFoodImg.alpha = OPAQUE
+        
         monsterHeartImg.userInteractionEnabled = true
         monsterFoodImg.userInteractionEnabled = true
         
@@ -90,45 +115,73 @@ class ViewController: UIViewController {
         monsterHeartImg.dropTarget = monsterImg
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.itemDroppedonCharacter(_:)), name: "onTargetDropped", object: nil)
         
-        startTimer()
+        generateRandomNeed()
+        startTimer(3.0)
     }
     
-    func startTimer() {
+    func startTimer(duration: Double) {
         if timer != nil {
             timer.invalidate()
         }
-        timer = NSTimer.scheduledTimerWithTimeInterval(3.0, target: self, selector: #selector(ViewController.changeGameState), userInfo: nil, repeats: true)
+        timer = NSTimer.scheduledTimerWithTimeInterval(duration, target: self, selector: #selector(ViewController.changeGameState), userInfo: nil, repeats: true)
     }
     
     func changeGameState() {
-        if !monsterFed && !monsterLoved && numOfAvailableLives > 0 {
-            let deathAudioURL = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("death", ofType: "wav")!)
-            playAudioFile(deathAudioURL, numOfLoops: 0)
+        if !monsterFed && !monsterLoved {
+            sfxSkull.volume = 0.1
+            sfxSkull.play()
             
-            penaltyImages[MAXIMUM_PENALTIES - numOfAvailableLives].alpha = OPAQUE
-            numOfAvailableLives = numOfAvailableLives - 1
+            if numOfAvailableLives > 0 {
+                penaltyImages[MAXIMUM_PENALTIES - numOfAvailableLives].alpha = OPAQUE
+                numOfAvailableLives = numOfAvailableLives - 1
+            }
             
             if numOfAvailableLives == 0 {
                 terminateGame()
             }
         }
+        
         monsterFed = false
         monsterLoved = false
+        
+        generateRandomNeed()
+    }
+    
+    func generateRandomNeed() {
+        let rand = arc4random_uniform(2)
+        
+        if numOfAvailableLives > 0 {
+            if rand == 0 {
+                monsterHeartImg.userInteractionEnabled = false
+                monsterFoodImg.userInteractionEnabled = true
+                
+                monsterHeartImg.alpha = DIM_ALPHA
+                monsterFoodImg.alpha = OPAQUE
+                
+            } else if rand == 1 {
+                monsterFoodImg.userInteractionEnabled = false
+                monsterHeartImg.userInteractionEnabled = true
+                
+                monsterFoodImg.alpha = DIM_ALPHA
+                monsterHeartImg.alpha = OPAQUE
+            }
+            
+        }
+
     }
     
     func terminateGame() {
         timer.invalidate()
+        sfxDeath.volume = 0.1
+        sfxDeath.play()
         monsterImg.playDeathAnimation()
+        
         monsterFoodImg.userInteractionEnabled = false
         monsterHeartImg.userInteractionEnabled = false
-        NSTimer.scheduledTimerWithTimeInterval(1, target: self, selector: #selector(ViewController.playDeathMusic), userInfo: nil, repeats: false)
+        
+        monsterFoodImg.alpha = DIM_ALPHA
+        monsterHeartImg.alpha = DIM_ALPHA
     }
     
-    func playDeathMusic() {
-        let caveMusicURL = NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("cave-music", ofType: "mp3")!)
-        playAudioFile(caveMusicURL, numOfLoops: -1)
-    }
-    
-
 }
 
