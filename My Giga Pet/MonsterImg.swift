@@ -52,4 +52,10 @@ class MonsterImg: UIImageView {
         self.startAnimating()
     }
     
+    func respawnMonster() {
+        self.monsterImages = [UIImage]()
+        playIdleAnimation()
+    }
+    
+        
 }

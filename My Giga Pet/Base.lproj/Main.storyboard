@@ -53,9 +53,6 @@
                                                 <variation key="heightClass=compact" constant="50"/>
                                             </constraint>
                                         </constraints>
-                                        <variation key="heightClass=regular" misplaced="YES">
-                                            <rect key="frame" x="0.0" y="0.0" width="60" height="60"/>
-                                        </variation>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="skull" translatesAutoresizingMaskIntoConstraints="NO" id="qDd-AJ-vDo">
                                         <rect key="frame" x="83" y="0.0" width="60" height="60"/>
@@ -69,9 +66,6 @@
                                         </constraints>
                                         <variation key="heightClass=compact" misplaced="YES">
                                             <rect key="frame" x="73" y="0.0" width="50" height="50"/>
-                                        </variation>
-                                        <variation key="heightClass=regular" misplaced="YES">
-                                            <rect key="frame" x="70" y="0.0" width="60" height="60"/>
                                         </variation>
                                         <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
                                             <rect key="frame" x="70" y="0.0" width="60" height="60"/>
@@ -90,9 +84,6 @@
                                         <variation key="heightClass=compact" misplaced="YES">
                                             <rect key="frame" x="146" y="0.0" width="50" height="50"/>
                                         </variation>
-                                        <variation key="heightClass=regular" misplaced="YES">
-                                            <rect key="frame" x="140" y="0.0" width="60" height="60"/>
-                                        </variation>
                                         <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
                                             <rect key="frame" x="140" y="0.0" width="60" height="60"/>
                                         </variation>
@@ -101,9 +92,7 @@
                                 <variation key="heightClass=compact" misplaced="YES">
                                     <rect key="frame" x="74" y="50" width="196" height="50"/>
                                 </variation>
-                                <variation key="heightClass=regular" misplaced="YES" spacing="10">
-                                    <rect key="frame" x="201" y="45" width="200" height="60"/>
-                                </variation>
+                                <variation key="heightClass=regular" spacing="10"/>
                                 <variation key="heightClass=regular-widthClass=compact" misplaced="YES">
                                     <rect key="frame" x="111" y="45" width="200" height="60"/>
                                 </variation>
@@ -132,6 +121,19 @@
                                 </constraints>
                                 <variation key="heightClass=compact" axis="vertical"/>
                             </stackView>
+                            <button hidden="YES" opaque="NO" alpha="0.75" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="7xU-WO-Smk">
+                                <rect key="frame" x="206" y="265" width="189" height="70"/>
+                                <color key="backgroundColor" red="0.97664020191989931" green="1" blue="0.96296525781670195" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="189" id="4jg-SK-LUi"/>
+                                    <constraint firstAttribute="height" constant="70" id="s8Z-cL-Ftd"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" name="HelveticaNeue" family="Helvetica Neue" pointSize="15"/>
+                                <state key="normal" title="Spawn new Monster!"/>
+                                <connections>
+                                    <action selector="respawnBtnPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="RdJ-sq-goa"/>
+                                </connections>
+                            </button>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -143,6 +145,7 @@
                             <constraint firstItem="b5b-vm-pY2" firstAttribute="top" secondItem="HBZ-fp-tB3" secondAttribute="bottom" constant="8" id="F8f-I0-vka"/>
                             <constraint firstItem="HBZ-fp-tB3" firstAttribute="top" secondItem="y3c-jy-aDJ" secondAttribute="bottom" id="MF7-tg-v39"/>
                             <constraint firstItem="CFH-ER-lbs" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="topMargin" id="MrQ-S4-ylW"/>
+                            <constraint firstItem="7xU-WO-Smk" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="NFC-zc-gns"/>
                             <constraint firstAttribute="trailingMargin" secondItem="CFH-ER-lbs" secondAttribute="trailing" constant="-20" id="NIX-Cb-Exk"/>
                             <constraint firstItem="b5b-vm-pY2" firstAttribute="leading" secondItem="HBZ-fp-tB3" secondAttribute="leading" id="NUJ-nO-euJ"/>
                             <constraint firstAttribute="trailingMargin" secondItem="wFE-Oo-6pC" secondAttribute="trailing" constant="-20" id="OvR-z5-1UF"/>
@@ -151,6 +154,7 @@
                             <constraint firstAttribute="trailing" secondItem="hqU-mR-mDu" secondAttribute="trailing" constant="-335" id="SCY-Dc-Exe"/>
                             <constraint firstItem="b5b-vm-pY2" firstAttribute="top" secondItem="HBZ-fp-tB3" secondAttribute="bottom" constant="7" id="T4J-lb-6Mc"/>
                             <constraint firstItem="CFH-ER-lbs" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leadingMargin" constant="-20" id="Wap-xZ-tTx"/>
+                            <constraint firstItem="7xU-WO-Smk" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="YoW-Qe-xoB"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="wFE-Oo-6pC" secondAttribute="bottom" id="bu8-E1-wbr"/>
                             <constraint firstItem="b5b-vm-pY2" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="ec8-2c-ikB"/>
                             <constraint firstItem="wfy-db-euE" firstAttribute="top" secondItem="hqU-mR-mDu" secondAttribute="bottom" constant="46" id="mxO-Nq-8NA"/>
@@ -178,6 +182,7 @@
                         </variation>
                     </view>
                     <connections>
+                        <outlet property="RespawnBtn" destination="7xU-WO-Smk" id="Dw2-TY-6Az"/>
                         <outlet property="monsterFoodImg" destination="LM3-yi-9wl" id="Idx-Cn-lAc"/>
                         <outlet property="monsterHeartImg" destination="YTV-R3-7zS" id="ScP-s7-tli"/>
                         <outlet property="monsterImg" destination="hqU-mR-mDu" id="qwZ-ag-2DJ"/>

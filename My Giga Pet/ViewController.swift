@@ -36,6 +36,7 @@ class ViewController: UIViewController {
     var sfxDeath: AVAudioPlayer!
     var sfxSkull: AVAudioPlayer!
     
+    @IBOutlet weak var RespawnBtn: UIButton!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -74,6 +75,8 @@ class ViewController: UIViewController {
     }
     
     func initializeGame() {
+        monsterImg.respawnMonster()
+        
         do {
             try musicPlayer = AVAudioPlayer(contentsOfURL: NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("cave-music", ofType: "mp3")!))
             try sfxBite = AVAudioPlayer(contentsOfURL: NSURL.fileURLWithPath(NSBundle.mainBundle().pathForResource("bite", ofType: "wav")!))
@@ -114,6 +117,8 @@ class ViewController: UIViewController {
         monsterFoodImg.dropTarget = monsterImg
         monsterHeartImg.dropTarget = monsterImg
         NSNotificationCenter.defaultCenter().addObserver(self, selector: #selector(ViewController.itemDroppedonCharacter(_:)), name: "onTargetDropped", object: nil)
+        
+        RespawnBtn.hidden = true
         
         generateRandomNeed()
         startTimer(3.0)
@@ -181,6 +186,13 @@ class ViewController: UIViewController {
         
         monsterFoodImg.alpha = DIM_ALPHA
         monsterHeartImg.alpha = DIM_ALPHA
+        
+        RespawnBtn.hidden = false
+    }
+    
+    
+    @IBAction func respawnBtnPressed(sender: AnyObject) {
+        initializeGame()
     }
     
 }
